@@ -20,9 +20,9 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center">
+              <div className="flex items-center cursor-pointer">
                 <WhoopLogo />
-              </a>
+              </div>
             </Link>
           </div>
           
@@ -31,6 +31,7 @@ const Header = () => {
             <a href="#" className="text-sm font-medium hover:text-[#009ffd] transition-colors">MEMBERSHIP</a>
             <a href="#" className="text-sm font-medium hover:text-[#009ffd] transition-colors">TECHNOLOGY</a>
             <a href="#" className="text-sm font-medium hover:text-[#009ffd] transition-colors">SCIENCE</a>
+            <Link href="/competitors" className="text-sm font-medium hover:text-[#009ffd] transition-colors">COMPETITORS</Link>
             <a href="#" className="text-sm font-medium hover:text-[#009ffd] transition-colors">TEAMS</a>
           </div>
           
@@ -89,6 +90,7 @@ const Header = () => {
               <li><a href="#" className="text-xl font-medium block">MEMBERSHIP</a></li>
               <li><a href="#" className="text-xl font-medium block">TECHNOLOGY</a></li>
               <li><a href="#" className="text-xl font-medium block">SCIENCE</a></li>
+              <li><Link href="/competitors"><span className="text-xl font-medium block">COMPETITORS</span></Link></li>
               <li><a href="#" className="text-xl font-medium block">TEAMS</a></li>
             </ul>
           </nav>

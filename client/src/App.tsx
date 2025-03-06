@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import CompetitorComparison from "@/components/competitors/CompetitorComparison";
 
 function Router() {
   return (
@@ -14,6 +15,7 @@ function Router() {
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/competitors" component={CompetitorComparison} />
           <Route component={NotFound} />
         </Switch>
       </main>
