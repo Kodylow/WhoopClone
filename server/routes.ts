@@ -7,8 +7,16 @@ import {
   insertJournalEntrySchema 
 } from "@shared/schema";
 import { ZodError } from "zod";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', (req: any, res) => {
+    res.json(req.session?.passport?.user || null);
+  });
   // User routes
   app.post('/api/users', async (req: Request, res: Response) => {
     try {

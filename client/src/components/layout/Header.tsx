@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'wouter';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { COLORS } from '@/lib/constants';
+import { useAuth } from '@/hooks/useAuth';
 
 const WhoopLogo = () => (
   <svg className="h-8 w-auto" viewBox="0 0 120 36" fill="currentColor">
@@ -11,6 +12,7 @@ const WhoopLogo = () => (
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   return (
     <header className="fixed top-0 w-full z-50 bg-[#121212] border-b border-gray-800">
@@ -33,9 +35,31 @@ const Header = () => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <a href="#" className="text-sm font-medium text-[#009ffd] hover:text-white transition-colors px-4 py-2 rounded-full border border-[#009ffd]">
-              LOG IN
-            </a>
+            {isLoading ? (
+              <div className="text-sm font-medium px-4 py-2">Loading...</div>
+            ) : isAuthenticated ? (
+              <div className="flex items-center">
+                <div className="hidden md:flex items-center mr-4">
+                  <div className="h-8 w-8 rounded-full bg-[#009ffd] flex items-center justify-center mr-2">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="text-sm">{user?.username || 'User'}</span>
+                </div>
+                <a 
+                  href="/api/logout" 
+                  className="text-sm font-medium text-white hover:text-[#009ffd] transition-colors px-4 py-2 rounded-full bg-[#1c1c1c]"
+                >
+                  LOGOUT
+                </a>
+              </div>
+            ) : (
+              <a 
+                href="/api/login" 
+                className="text-sm font-medium text-[#009ffd] hover:text-white transition-colors px-4 py-2 rounded-full border border-[#009ffd]"
+              >
+                LOG IN WITH REPLIT
+              </a>
+            )}
             <button 
               className="md:hidden text-white"
               onClick={() => setIsMobileMenuOpen(true)}
@@ -70,9 +94,29 @@ const Header = () => {
           </nav>
           
           <div className="mt-8">
-            <a href="#" className="block w-full bg-[#009ffd] text-white font-semibold px-6 py-3 rounded-full text-center">
-              LOG IN
-            </a>
+            {isAuthenticated ? (
+              <div className="space-y-4">
+                <div className="flex items-center mb-4">
+                  <div className="h-10 w-10 rounded-full bg-[#009ffd] flex items-center justify-center mr-3">
+                    <User className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-md">{user?.username || 'User'}</span>
+                </div>
+                <a 
+                  href="/api/logout" 
+                  className="block w-full bg-[#1c1c1c] text-white font-semibold px-6 py-3 rounded-full text-center border border-gray-700"
+                >
+                  LOGOUT
+                </a>
+              </div>
+            ) : (
+              <a 
+                href="/api/login" 
+                className="block w-full bg-[#009ffd] text-white font-semibold px-6 py-3 rounded-full text-center"
+              >
+                LOG IN WITH REPLIT
+              </a>
+            )}
           </div>
         </div>
       )}
