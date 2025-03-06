@@ -18,7 +18,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(req.session?.passport?.user || null);
   });
   // User routes
-  app.post('/api/users', async (req: Request, res: Response) => {
+  app.post('/api/users', isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userData = insertUserSchema.parse(req.body);
       const user = await storage.createUser(userData);
@@ -34,7 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/users/:id', async (req: Request, res: Response) => {
+  app.get('/api/users/:id', isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = parseInt(req.params.id);
       const user = await storage.getUser(userId);

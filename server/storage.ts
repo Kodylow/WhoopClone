@@ -6,6 +6,10 @@ import {
   JournalEntry, 
   InsertJournalEntry 
 } from "@shared/schema";
+import session from "express-session";
+import MemoryStore from "memorystore";
+
+const MemorySessionStore = MemoryStore(session);
 
 export interface IStorage {
   // User methods
@@ -20,6 +24,9 @@ export interface IStorage {
   // Journal entries methods
   createJournalEntry(entry: InsertJournalEntry): Promise<JournalEntry>;
   getJournalEntriesByUserId(userId: number): Promise<JournalEntry[]>;
+  
+  // Session store
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -30,6 +37,8 @@ export class MemStorage implements IStorage {
   private userCurrentId: number;
   private healthMetricCurrentId: number;
   private journalEntryCurrentId: number;
+  
+  public sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
@@ -39,6 +48,11 @@ export class MemStorage implements IStorage {
     this.userCurrentId = 1;
     this.healthMetricCurrentId = 1;
     this.journalEntryCurrentId = 1;
+    
+    // Initialize the memory session store
+    this.sessionStore = new MemorySessionStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
   }
 
   // User methods

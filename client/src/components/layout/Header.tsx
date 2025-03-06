@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'wouter';
 import { Menu, X, User } from 'lucide-react';
 import { COLORS } from '@/lib/constants';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, ReplitUser } from '@/hooks/useAuth';
 
 const WhoopLogo = () => (
   <svg className="h-8 w-auto" viewBox="0 0 120 36" fill="currentColor">
