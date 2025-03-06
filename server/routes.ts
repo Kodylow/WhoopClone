@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Health metrics routes
-  app.post('/api/health-metrics', async (req: Request, res: Response) => {
+  app.post('/api/health-metrics', isAuthenticated, async (req: Request, res: Response) => {
     try {
       const metricData = insertHealthMetricSchema.parse(req.body);
       const healthMetric = await storage.createHealthMetric(metricData);
@@ -66,7 +66,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/health-metrics/:userId', async (req: Request, res: Response) => {
+  app.get('/api/health-metrics/:userId', isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = parseInt(req.params.userId);
       const metrics = await storage.getHealthMetricsByUserId(userId);
@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Journal entries routes
-  app.post('/api/journal-entries', async (req: Request, res: Response) => {
+  app.post('/api/journal-entries', isAuthenticated, async (req: Request, res: Response) => {
     try {
       const entryData = insertJournalEntrySchema.parse(req.body);
       const journalEntry = await storage.createJournalEntry(entryData);
@@ -91,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/journal-entries/:userId', async (req: Request, res: Response) => {
+  app.get('/api/journal-entries/:userId', isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = parseInt(req.params.userId);
       const entries = await storage.getJournalEntriesByUserId(userId);

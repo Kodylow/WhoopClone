@@ -11,8 +11,12 @@ if (!process.env.REPLIT_DOMAINS) {
 }
 
 export async function setupAuth(app: Express) {
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("Environment variable SESSION_SECRET not provided");
+  }
+  
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "your-secret-key",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,

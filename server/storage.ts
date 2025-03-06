@@ -72,6 +72,8 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id, 
+      firstName: insertUser.firstName || null,
+      lastName: insertUser.lastName || null,
       createdAt: now
     };
     this.users.set(id, user);
@@ -81,7 +83,22 @@ export class MemStorage implements IStorage {
   // Health metrics methods
   async createHealthMetric(insertMetric: InsertHealthMetric): Promise<HealthMetric> {
     const id = this.healthMetricCurrentId++;
-    const healthMetric: HealthMetric = { ...insertMetric, id };
+    const healthMetric: HealthMetric = { 
+      ...insertMetric, 
+      id,
+      date: insertMetric.date || new Date(),
+      recoveryScore: insertMetric.recoveryScore ?? null,
+      strainScore: insertMetric.strainScore ?? null,
+      sleepScore: insertMetric.sleepScore ?? null,
+      hrv: insertMetric.hrv ?? null,
+      restingHr: insertMetric.restingHr ?? null,
+      respiratoryRate: insertMetric.respiratoryRate ?? null,
+      sleepDuration: insertMetric.sleepDuration ?? null,
+      deepSleep: insertMetric.deepSleep ?? null,
+      remSleep: insertMetric.remSleep ?? null,
+      caloriesBurned: insertMetric.caloriesBurned ?? null,
+      steps: insertMetric.steps ?? null
+    };
     this.healthMetrics.set(id, healthMetric);
     return healthMetric;
   }
@@ -95,7 +112,12 @@ export class MemStorage implements IStorage {
   // Journal entries methods
   async createJournalEntry(insertEntry: InsertJournalEntry): Promise<JournalEntry> {
     const id = this.journalEntryCurrentId++;
-    const journalEntry: JournalEntry = { ...insertEntry, id };
+    const journalEntry: JournalEntry = { 
+      ...insertEntry, 
+      id,
+      date: insertEntry.date || new Date(),
+      notes: insertEntry.notes ?? null
+    };
     this.journalEntries.set(id, journalEntry);
     return journalEntry;
   }
