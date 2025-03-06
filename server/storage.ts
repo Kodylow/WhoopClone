@@ -4,12 +4,19 @@ import {
   HealthMetric, 
   InsertHealthMetric, 
   JournalEntry, 
-  InsertJournalEntry 
+  InsertJournalEntry,
+  users,
+  healthMetrics,
+  journalEntries
 } from "@shared/schema";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { eq } from "drizzle-orm";
+import { db, pool } from "./db";
 
 const MemorySessionStore = MemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   // User methods
@@ -129,4 +136,68 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  public sessionStore: session.Store;
+
+  constructor() {
+    // Initialize PostgreSQL session store
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true
+    });
+  }
+
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  // Health metrics methods
+  async createHealthMetric(insertMetric: InsertHealthMetric): Promise<HealthMetric> {
+    const [healthMetric] = await db
+      .insert(healthMetrics)
+      .values(insertMetric)
+      .returning();
+    return healthMetric;
+  }
+
+  async getHealthMetricsByUserId(userId: number): Promise<HealthMetric[]> {
+    return await db
+      .select()
+      .from(healthMetrics)
+      .where(eq(healthMetrics.userId, userId));
+  }
+
+  // Journal entries methods
+  async createJournalEntry(insertEntry: InsertJournalEntry): Promise<JournalEntry> {
+    const [journalEntry] = await db
+      .insert(journalEntries)
+      .values(insertEntry)
+      .returning();
+    return journalEntry;
+  }
+
+  async getJournalEntriesByUserId(userId: number): Promise<JournalEntry[]> {
+    return await db
+      .select()
+      .from(journalEntries)
+      .where(eq(journalEntries.userId, userId));
+  }
+}
+
+// Switch from MemStorage to DatabaseStorage
+export const storage = new DatabaseStorage();
